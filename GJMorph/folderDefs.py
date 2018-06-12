@@ -22,3 +22,5 @@ Name of the sheet of "excel" containing metadata of all experiments
 '''
 excelSheet = 'Kai-san final report150803'
 
+specFile = os.path.join(homeFolder, "DataAndResults", "morphology", "DL-Int-1Results", "ScalarParameters",
+                        "DL-Int-1_globalMeasuresSpec")
