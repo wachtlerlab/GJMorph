@@ -1,3 +1,19 @@
+"""
+Description:        This file is used to generate a json parameter file for co-registering two set of co-registered
+                    morphologies.Reg-MaxS is internally used for co-registering "average" (i.e. Union) representations
+                    of the morphologies in each set. Each morphology of the test set is transformed using the same
+                    transformation that was used to co-register the test average.
+                    The generated JSON file will contain a dict with keys specified in GJMorph.reg2regParNames
+
+Usage:              python constructReg2RegSetsParFile.py
+
+Action:             creates a parameter file for co-registering two sets of co-registered morphologies
+
+Usage guidelines:   There are a couple of cases with examples shown below.
+                    Read the comments therein.
+                    Essentially edit the values of some variables in this script and run it.
+"""
+
 import json
 import os
 from itertools import product

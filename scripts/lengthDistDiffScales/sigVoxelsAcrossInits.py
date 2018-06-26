@@ -27,8 +27,8 @@ if __name__ == '__main__':
     nInitRefs = inDF["initRefs"].unique().size
     nInitRefsLimit = nInitRefs * fractionInitRefsSignifLimit
 
-    filteredDataDF = pd.read_excel(filteredDataXL)
-    criterion = lambda x: x["Number of InitRefs for \nwhich difference is significant"] > nInitRefsLimit
+    filteredDataDF = pd.read_excel(filteredDataXL, index_col=0)
+    criterion = lambda x: x["Significant Difference"] == 1
     filteredDataFilteredDF = filteredDataDF.loc[criterion, :]
     finalVoxelSet = map(make_tuple, filteredDataFilteredDF["voxel center"])
     voxelSize = filteredDataFilteredDF["voxel size"].iloc[0]

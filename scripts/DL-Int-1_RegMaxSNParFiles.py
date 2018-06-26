@@ -1,3 +1,7 @@
+"""
+A copy of regmaxsn.scripts.utils.constructRegMaxSNParFile adapted to work with DL-Int-1 data.
+"""
+
 import json
 import os
 from itertools import product

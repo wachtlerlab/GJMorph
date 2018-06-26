@@ -1,18 +1,17 @@
 '''
-This file contains a couple of important parameter configurations useful when plotting with matplotlib
+A set of matplotlib rcParams with user specified values. These go well with a figure of size (7, 5.6)
 '''
 
 import matplotlib as mpl
 import numpy as np
 
-'''
-A set of matplotlib rcParams with user specified values. These go well with a figure of size (7, 5.6)
-'''
+
 mplPars = {'text.usetex': True,
            'axes.labelsize': 'large',
            'axes.titlesize': 24,
            'font.family': 'sans-serif',
-           'font.sans-serif': 'computer modern bright',
+           'font.sans-serif': "cmbright",
+           'font.style': "normal",
            'font.size': 24,
            'font.weight': 'black',
            'xtick.labelsize': 20,

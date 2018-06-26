@@ -1,3 +1,12 @@
+"""
+Description:            Converts a JSON parameter file for co-registering two co-registered sets to an excel file that
+                        can be used for the scripts compareLengthVsDist.py and lengthDistDiffScales.generateRawDF.py
+
+Usage:                  python convertRegMaxSNParFile2AnalysisInput.py <JSON Parameter file> <part> <output file>
+
+Note:                   <part> can take values in ["WN", "MB", "VB", "DB"]
+"""
+
 from GJMorph.reg2regParNames import Reg2RegParNames
 from regmaxsn.core.misc import parFileCheck
 import pandas as pd
