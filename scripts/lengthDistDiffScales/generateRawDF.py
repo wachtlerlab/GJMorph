@@ -1,3 +1,16 @@
+'''
+Description:        This script is used to divide the space containing the input SWCs into voxels and calculate
+                    the dendritic length of each SWC in each voxel. These calculated data stored in a table with one
+                    row for every combination of SWC and voxel. Meta data such as Labor State, initRefs, swcFile and
+                    Experiment ID are also saved.
+
+Usage:              python generateRawDF.py <inputXL> <voxel size> <outputXL>
+                    <inputXL>: string containing the path of an excel file with the columns "Experiment ID",
+                    "Labor State", "initRefs" and "swcFile".
+                    <voxel size>: string, which represents a float, the desired size of the voxels
+                    <outputXL>: string, path where the output excel file will be written.
+'''
+
 import itertools
 import pandas as pd
 from regmaxsn.core.swcFuncs import resampleSWC

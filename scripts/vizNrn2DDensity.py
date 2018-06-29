@@ -1,10 +1,26 @@
+"""
+Description:            This script is used to plot 2D visualizations of SWCs with circles representing SWC nodes and
+                        lines representing connections between nodes. The areas behind such plots is divided into
+                        squares, with squares containing atleast one SWC node highlighted. Joint visualization of
+                        multiple SWCS, with each SWC highlighted in a different color, is also possible.
+
+Usage:                  Modify the definition of the following variables and run the script:
+                        1. dirPath: string, containing the path of a directory containing input SWCs
+                        2. expNames: list of strings, each containing the names of SWCS
+                        3. gridSize: size of the squares into which the area behind SWCs is divided.
+
+Note:                   This file was used to generate the top row of Figure 1 in
+                        Kumaraswamy et al. "Spatial Registration of Neuron Morphologies Based on Maximization of
+                        Volume Overlap." BMC Bioinformatics 19.143 (2018).https://doi.org/10.1186/s12859-018-2136-z
+"""
+
 from matplotlib import pyplot as plt
 import numpy as np
 import seaborn as sns
 from matplotlib import patches as mpatches
 import colorsys
 import os
-from GJEMS.folderDefs import homeFolder
+from GJMorph.folderDefs import homeFolder
 
 plt.ion()
 
@@ -19,6 +35,7 @@ mplPars = { 'text.usetex'       :    True,
             'ytick.labelsize'   :    40,
             }
 sns.set(rc=mplPars)
+
 
 def getLighterColor(col, saturation):
     '''
