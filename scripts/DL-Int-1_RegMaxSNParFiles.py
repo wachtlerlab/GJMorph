@@ -43,8 +43,10 @@ maxIter = 100
 
 
 pars = []
+# parFile = os.path.join(homeFolder, "DataAndResults", "morphology",
+#                        'ParFiles', 'Reg-MaxS-N', 'DL-Int-1_min20_all.json')
 parFile = os.path.join(homeFolder, "DataAndResults", "morphology",
-                       'ParFiles', 'Reg-MaxS-N', 'DL-Int-1_min20_all.json')
+                       'ParFiles', 'Reg-MaxS-N', 'DL-Int-1_min20_12Nrs_all.json')
 # parFile = os.path.join(homeFolder, "DataAndResults", "morphology",
 #                        'ParFiles', 'Reg-MaxS-N', 'DL-Int-1_N_141030-1.json')
 # -----------------------------------------------------------------------------------
@@ -56,14 +58,14 @@ expNames = [
                 'HB130313-4',
                 'HB130322-1',
                 'HB130326-2',
-                'HB130408-1',
+                # 'HB130408-1',
                 'HB130425-1',
-                'HB130501-2',
+                # 'HB130501-2',
                 'HB130705-1',
                 'HB140424-1',
             ]
 swcList = [os.path.join(swcDir, expName + '.swc') for expName in expNames]
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
                       'Forager_refHB130313-4')
 finallyNormalizeWRT = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1',
                                    'HB130425-1.swc')
@@ -73,9 +75,9 @@ pars += [{k: ns[k] for k in RegMaxSNParNames}]
 # -----------------------------------------------------------------------------------
 # job 2
 # -----------------------------------------------------------------------------------
-initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130501-2.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'Forager_refHB130501-2')
+initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130425-1.swc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'Forager_refHB130425-1')
 
 ns = vars()
 pars += [{k: ns[k] for k in RegMaxSNParNames}]
@@ -84,7 +86,7 @@ pars += [{k: ns[k] for k in RegMaxSNParNames}]
 # job 3
 # -----------------------------------------------------------------------------------
 initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130322-1.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
                       'Forager_refHB130322-1')
 
 ns = vars()
@@ -103,10 +105,11 @@ expNames = [
                 'HB140813-3',
                 'HB140917-1',
                 'HB140930-1',
-                'HB141030-1',
+                # 'HB141030-1',
             ]
 swcList = [os.path.join(swcDir, expName + '.swc') for expName in expNames]
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20', 'NE_refHB130605-2')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130605-2')
 finallyNormalizeWRT = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1',
                                    'HB130523-3.swc')
 ns = vars()
@@ -116,15 +119,17 @@ pars += [{k: ns[k] for k in RegMaxSNParNames}]
 # job 5
 # -----------------------------------------------------------------------------------
 initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130605-1.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20', 'NE_refHB130605-1')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130605-1')
 ns = vars()
 pars += [{k: ns[k] for k in RegMaxSNParNames}]
 
 # -----------------------------------------------------------------------------------
 # job 6
 # -----------------------------------------------------------------------------------
-initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB141030-1.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20', 'NE_refHB141030-1')
+initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130523-3.swc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130523-3')
 ns = vars()
 pars += [{k: ns[k] for k in RegMaxSNParNames}]
 # **********************************************************************************************************************

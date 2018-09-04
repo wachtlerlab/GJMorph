@@ -4,7 +4,6 @@ functions
 '''
 
 import os
-from GJEphys.KKHAXLParsing import parseMetaDataFile, getExpIDsByCategory
 
 '''
 A folder to store all data. All input data, intermediate processed data and output data will be collected here.
@@ -23,4 +22,4 @@ Name of the sheet of "excel" containing metadata of all experiments
 excelSheet = 'Kai-san final report150803'
 
 specFile = os.path.join(homeFolder, "DataAndResults", "morphology", "DL-Int-1Results", "ScalarParameters",
-                        "DL-Int-1_globalMeasuresSpec")
+                        "DL-Int-1_globalMeasuresSpec.xlsx")

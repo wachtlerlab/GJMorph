@@ -18,7 +18,8 @@ setup(
                       "scikit-learn>=0.18.1",
                       "regmaxsn",
                       "requests>=2.14.2",
-                      "py-vaa3d>=0.1"],
+                      "py-vaa3d>=0.1",
+                      "scikit-learn>=0.19.1"],
 
     python_requires=">=2.7",
     dependency_links=["git+https://github.com/wachtlerlab/btmorph_v2.git",

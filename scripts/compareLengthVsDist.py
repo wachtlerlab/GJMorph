@@ -28,7 +28,7 @@ binEdges = np.arange(0, 350, 20)
 binWidth = binEdges[1] - binEdges[0]
 binCenters = binEdges[:-1] + 0.5 * (binWidth)
 # manually entered value of origin. It is the average of the roots of all WN morphologies.
-origin = [254.79213333, 119.54293333, 168.7052]
+origin = (254.79213333, 119.54293333, 168.7052)
 # ----------------------------------------------------------------------------------------------------------------------
 
 def saveData(inXL, dataXL, origin=origin):

@@ -276,6 +276,12 @@ maxIter = 100
 # npars += [{k: ns[k] for k in RegMaxSNParNames}]
 # # **********************************************************************************************************************
 
+
+
+# # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Hack to make Reg2Reg do no scaling !!!!!!!!!!!!!!!!!!!!!!
+# scaleBounds = [[1, 1], [1, 1], [1, 1]]
+# # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 fpars = []
 # -----------------------------------------------------------------------------------
 # job 1
@@ -286,14 +292,14 @@ expNames = [
                 'HB130313-4',
                 'HB130322-1',
                 'HB130326-2',
-                'HB130408-1',
+                # 'HB130408-1',
                 'HB130425-1',
-                'HB130501-2',
+                # 'HB130501-2',
                 'HB130705-1',
                 'HB140424-1',
             ]
 swcList = [os.path.join(swcDir, expName + '.swc') for expName in expNames]
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
                       'Forager_refHB130313-4')
 finallyNormalizeWRT = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1',
                                    'HB130425-1.swc')
@@ -303,9 +309,9 @@ fpars += [{k: ns[k] for k in RegMaxSNParNames}]
 # -----------------------------------------------------------------------------------
 # job 2
 # -----------------------------------------------------------------------------------
-initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130501-2.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'Forager_refHB130501-2')
+initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130322-1.swc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'Forager_refHB130322-1')
 
 ns = vars()
 fpars += [{k: ns[k] for k in RegMaxSNParNames}]
@@ -313,9 +319,9 @@ fpars += [{k: ns[k] for k in RegMaxSNParNames}]
 # -----------------------------------------------------------------------------------
 # job 3
 # -----------------------------------------------------------------------------------
-initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130322-1.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'Forager_refHB130322-1')
+initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130425-1.swc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'Forager_refHB130425-1')
 
 ns = vars()
 fpars += [{k: ns[k] for k in RegMaxSNParNames}]
@@ -334,11 +340,11 @@ expNames = [
                 'HB140813-3',
                 'HB140917-1',
                 'HB140930-1',
-                'HB141030-1',
+                # 'HB141030-1',
             ]
 swcList = [os.path.join(swcDir, expName + '.swc') for expName in expNames]
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'NE_refHB130605-2_scaled5pc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130605-2')
 finallyNormalizeWRT = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1',
                                    'HB130523-3.swc')
 ns = vars()
@@ -347,17 +353,17 @@ npars += [{k: ns[k] for k in RegMaxSNParNames}]
 # job 5
 # -----------------------------------------------------------------------------------
 initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130605-1.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'NE_refHB130605-1_scaled5pc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130605-1')
 ns = vars()
 npars += [{k: ns[k] for k in RegMaxSNParNames}]
 
 # -----------------------------------------------------------------------------------
 # job 6
 # -----------------------------------------------------------------------------------
-initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB140813-3.swc')
-resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_min20',
-                      'NE_refHB141030-1_scaled5pc')
+initRefSWC = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'OriginalData', 'DL-Int-1', 'HB130523-3.swc')
+resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg-MaxS-N', 'DL-Int-1_12Nrns_min20',
+                      'NE_refHB130523-3')
 ns = vars()
 npars += [{k: ns[k] for k in RegMaxSNParNames}]
 # **********************************************************************************************************************
@@ -367,8 +373,16 @@ pars = []
 #                        'DL-Int-1_forager3_ne3_subset1.json')
 # parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
 #                        'DL-Int-1_all_min20.json')
+# parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
+#                        'DL-Int-1_all_NEscaled5pc_min20.json')
+# parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
+#                        'DL-Int-1_12Nrns_min20_noScale.json')
 parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
-                       'DL-Int-1_all_NEscaled5pc_min20.json')
+                       'DL-Int-1_12Nrns_min20.json')
+# parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
+#                        'DL-Int-1_12Nrns_min20_scaled5pc.json')
+# parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
+#                        'DL-Int-1_12Nrns_NEscaled10pc_min20_noScale.json')
 # parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
 #                        'DL-Int-1_F_130322-1_NE_refHB130605-1_scaled5pc.json')
 # parFile = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'ParFiles', 'Reg2Reg',
@@ -381,12 +395,26 @@ for fpar, npar in product(fpars, npars):
 
     refSWCList = [os.path.join(fpar['resDir'], os.path.split(x)[1]) for x in fpar['swcList']]
     testSWCList = [os.path.join(npar['resDir'], os.path.split(x)[1]) for x in npar['swcList']]
-    resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg2Reg', 'DL-Int-1_min20',
+    # resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg2Reg', 'DL-Int-1_12Nrns_min20_noScale',
+    #                       os.path.split(fpar['resDir'])[1] + '_' +
+    #                       os.path.split(npar['resDir'])[1])
+    resDir = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg2Reg', 'DL-Int-1_12Nrns_min20',
                           os.path.split(fpar['resDir'])[1] + '_' +
                           os.path.split(npar['resDir'])[1])
+
     pars += [{k: ns[k] for k in Reg2RegParNames}]
 
 
 with open(parFile, 'w') as fle:
     json.dump(pars, fle)
+
+
+
+
+
+
+
+
+
+
 

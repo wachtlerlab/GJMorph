@@ -53,12 +53,12 @@ def transAndSave(inFile, outFile, jsonFile, rotMat, translation, rotCenter):
 # suffix = "_scaled5pc"
 # ----------------------------------------------------------------------------------------------------------------------
 
-assert len(sys.argv) != 3, "Improper Usage! Please use as: python {} <Reg-MaxS-N par file> <suffix>".format(sys.argv[0])
+assert len(sys.argv) == 3, "Improper Usage! Please use as: python {} <Reg-MaxS-N par file> <suffix>".format(sys.argv[0])
 
 parFile = sys.argv[1]
 suffix = sys.argv[2]
 
-scale = [1.05, 1.05, 1.05]
+scale = [1.15, 1.15, 1.15]
 translation = [0, 0, 0]
 rotation = [0, 0, 0]
 

@@ -18,39 +18,17 @@ from matplotlib import pyplot as plt
 import numpy as np
 import seaborn as sns
 from matplotlib import patches as mpatches
-import colorsys
 import os
 from GJMorph.folderDefs import homeFolder
+from GJMorph.matplotlibRCParams import getLighterColor, mplPars
 
 plt.ion()
 
-mplPars = { 'text.usetex'       :    True,
-            'axes.labelsize'    :   'large',
-            'axes.titlesize'    :   'large',
-            'font.family'       :   'sans-serif',
-            'font.sans-serif'   :   'computer modern roman',
-            'font.size'         :    48,
-            'font.weight'       :   'black',
-            'xtick.labelsize'   :    40,
-            'ytick.labelsize'   :    40,
-            }
+
 sns.set(rc=mplPars)
 
 
-def getLighterColor(col, saturation):
-    '''
-    Returns a color with the same hue and value as the color `col', but with the given saturation
-    :param col: 3 member iterable with values in [0, 1]
-    :param saturation: float in [0, 1]
-    :return:
-    '''
 
-    assert len(col) == 3, 'col must be a 3 member iterable'
-    assert all([0 <= x <= 1 for x in col]), 'col can only contain values in [0, 1]'
-    assert 0 <= saturation <= 1, 'saturation must be in [0, 1]'
-
-    hsv = colorsys.rgb_to_hsv(*col)
-    return colorsys.hsv_to_rgb(hsv[0], saturation, hsv[2])
 
 
 
@@ -116,7 +94,7 @@ cols = plt.cm.rainbow(np.linspace(0, 1, len(swcFiles)))
 xDis = []
 yDis = []
 with sns.axes_style('whitegrid'):
-    fig, ax = plt.subplots(figsize=(14, 10))
+    fig, ax = plt.subplots(figsize=(7, 5.6))
 
 for swcInd, swcFile in enumerate(swcFiles):
 

@@ -13,7 +13,7 @@ Usage:              python generateRawDF.py <inputXL> <voxel size> <outputXL>
 
 import itertools
 import pandas as pd
-from regmaxsn.core.swcFuncs import resampleSWC
+from GJMorph.auxFuncs import resampleSWC
 from regmaxsn.core.misc import parFileCheck
 import numpy as np
 import os
