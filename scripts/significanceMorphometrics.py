@@ -123,7 +123,7 @@ newlyEmergedNrns = [
                     ]
 # ----------------------------------------------------------------------------------------------------------------------
 # composeFN = lambda x, y, part: os.path.join(y, x, x + part + '.swc')
-composeFN = lambda x, y, part: os.path.join(y, x, x + part + 'C10S10.swc')
+composeFN = lambda x, y, part: os.path.join(y, x, '{}-{}C10S10.swc'.format(x, part))
 # ----------------------------------------------------------------------------------------------------------------------
 
 
