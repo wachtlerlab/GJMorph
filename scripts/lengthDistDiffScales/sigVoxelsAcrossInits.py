@@ -33,12 +33,10 @@ if __name__ == '__main__':
     filteredDataXL = sys.argv[2]
     mainOutDir = sys.argv[3]
 
-    meanDiffCappedAt = 40
-    fractionInitRefsSignifLimit = 0.65
+    meanDiffCappedAt = 30
 
     inDF = pd.read_excel(inputXL)
     nInitRefs = inDF["initRefs"].unique().size
-    nInitRefsLimit = nInitRefs * fractionInitRefsSignifLimit
 
     filteredDataDF = pd.read_excel(filteredDataXL, index_col=0)
     criterion = lambda x: x["Significant Difference"] == 1

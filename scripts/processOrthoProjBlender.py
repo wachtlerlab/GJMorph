@@ -12,8 +12,8 @@ Note:               The input images are to be saved as "<baseNameOfImages>XY.pn
                     default background color of Blender. This background color will be replaced by
                     [0.918, 0.918, 0.949, 1]
 
-Warning:            Will consume **A LOT OF RAM** when running as the three images as well as the result images are
-                    created.
+Warning:            Could consume **A LOT OF RAM** when running as the three images as well as during the creation of
+                    the result images, depending on the size of the images
 """
 
 import os
