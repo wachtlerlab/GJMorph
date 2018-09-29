@@ -249,9 +249,14 @@ def saveStats(inFile, outFile_prefix):
         measureEntry = Math(data=[NoEscape(r'\text{' + measure + '}')],
                             inline=True)
 
-        fEntry = Math(data=[NoEscape(fMean), NoEscape(pm), NoEscape(fStd)], inline=True)
-        nEntry = Math(data=[NoEscape(nMean), NoEscape(pm), NoEscape(nStd)], inline=True)
-        pValEntry = Math(data=[NoEscape(pValStr)], inline=True)
+        if np.isnan(pVal):
+            fEntry = "N/A"
+            nEntry = "N/A"
+            pValEntry = "N/A"
+        else:
+            fEntry = Math(data=[NoEscape(fMean), NoEscape(pm), NoEscape(fStd)], inline=True)
+            nEntry = Math(data=[NoEscape(nMean), NoEscape(pm), NoEscape(nStd)], inline=True)
+            pValEntry = Math(data=[NoEscape(pValStr)], inline=True)
 
         tableEntry = [measureEntry, nEntry, fEntry, pValEntry]
         table1.add_row(tableEntry)
