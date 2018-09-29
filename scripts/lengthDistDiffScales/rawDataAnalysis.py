@@ -35,6 +35,13 @@ def plotNLDistribution(rawDataXL, initRefStr, outputBase):
     else:
         raise ValueError("The initial reference string {} was not found in {}".format(initRefStr, rawDataXL))
 
+    foragerData = dataDF[dataDF["Labor State"] == "Forager"]
+    neData = dataDF[dataDF["Labor State"] == "Newly Emerged"]
+
+    foragerNLMean = foragerData["neurite length"].mean()
+    neNLMean = neData["neurite length"].mean()
+    allNLMean = dataDF["neurite length"].mean()
+
     # mplPars["text.usetex"] = False
     sns.set(style="darkgrid", rc=mplPars)
     fig, ax = plt.subplots(figsize=(7, 5.6))
@@ -48,7 +55,12 @@ def plotNLDistribution(rawDataXL, initRefStr, outputBase):
     ax.set_yticklabels([])
     ax.set_ylabel("Relative frequency\n of occurance")
     ax.set_xlabel("Dendritic Length\nper neuron per voxel ($\mu m$)")
-    ax.legend(ncol=2, loc="best")
+    ax.legend(ncol=2, loc="upper center")
+    ylim = ax.get_ylim()
+    ax.text(55, ylim[0] + 0.3 * (ylim[1] - ylim[0]),
+            "f\_NL\_mean: {:.3g}\nne\_NL\_mean: {:.3g}\nall\_NL\_mean: {:.3g}".format(foragerNLMean,
+                                                                                neNLMean, allNLMean),
+            va="top", ha="left")
     fig.tight_layout()
     fig.savefig("{}.png".format(outputBase), dpi=300)
 
@@ -89,16 +101,24 @@ def plotNormedMeanDifferenceDist(rawDataXL, filteredDataXL, outBase):
 
     dataDF = pd.read_excel(rawDataXL, index_col=0)
 
-    avgTDL = dataDF["neurite length"].mean()
+    meanNLPerVoxel = dataDF.groupby("voxel center").mean()["neurite length"].sort_index()
+
+    # avgTDL = dataDF["neurite length"].mean()
 
     filteredDF = pd.read_excel(filteredDataXL, index_col=0)
 
-    normalizedPCDifferenceInTDL = 100 * filteredDF["Difference of Means"] / avgTDL
+    filteredDF.set_index("voxel center", inplace=True)
+    filteredDF.sort_index(inplace=True)
+    filteredDF["Mean neurite length"] = meanNLPerVoxel.values
+    filteredDF["Normalized Percentage Difference of Means"] = filteredDF.apply(
+        lambda x: 100 * x["Difference of Means"] / x["Mean neurite length"], axis=1)
+
+    # normalizedPCDifferenceInTDL = 100 * filteredDF["Difference of Means"] / avgTDL
 
     sns.set(style="darkgrid", rc=mplPars)
     fig, ax = plt.subplots(figsize=(7, 5.6))
 
-    sns.violinplot(x=normalizedPCDifferenceInTDL, scale="area",
+    sns.violinplot(x=filteredDF["Normalized Percentage Difference of Means"], scale="area",
                    inner="quartile", ax=ax, bw=0.001)
     ax.set_ylabel("Relative frequency\nof occurance")
     ax.set_xlabel("Normalized Percentage Difference \nbetween mean TDL per voxel\nForager-NewlyEmerged")
@@ -107,6 +127,8 @@ def plotNormedMeanDifferenceDist(rawDataXL, filteredDataXL, outBase):
     ax.set_xticklabels(["{}\%".format(x) for x in np.arange(-150, 200, 50)], rotation=90)
     fig.tight_layout()
     fig.savefig("{}.png".format(outBase), dpi=300)
+
+    filteredDF.to_excel("{}_diffNormed.xlsx".format(outBase))
 
 
 if __name__ == '__main__':
