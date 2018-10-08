@@ -15,7 +15,6 @@ setup(
                       "pillow>=4.0.0",
                       "xlrd>=1.0.0",
                       "openpyxl>=2.4.5",
-                      "scikit-learn>=0.18.1",
                       "regmaxsn",
                       "requests>=2.14.2",
                       "py-vaa3d>=0.1",
@@ -23,7 +22,8 @@ setup(
 
     python_requires=">=2.7",
     dependency_links=["git+https://github.com/wachtlerlab/btmorph_v2.git",
-                      "git+https://github.com/dEvasEnApati/pyVaa3d.git"]
+                      "git+https://github.com/dEvasEnApati/pyVaa3d.git",
+                      "git+https://github.com/wachtlerlab/Reg-MaxS.git"]
 
 
     )

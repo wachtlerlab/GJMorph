@@ -114,9 +114,9 @@ resDir2 = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg2Reg', 'D
 # resDir1 = os.path.join(homeFolder, 'DataAndResults', 'morphology', "DL-Int-1Results", "voxelWiseDistAnalysis",
 #                       "twoWayAnova", "FMinusNE_vs20_0p05", "Forager_refHB130322-1_NE_refHB130605-2_scaled5pc")
 
-resDir1 = os.path.join(homeFolder, 'DataAndResults', 'morphology', "DL-Int-1Results", "voxelWiseDistAnalysis",
-                      "DL-Int-1_min20_12Nrns", "TwoWayAnova_withOverlap", "FMinusNE_vs20_0p05",
-                       "Forager_refHB130322-1_NE_refHB130605-2")
+resDir1 = os.path.join(homeFolder, 'DataAndResults', 'morphology', "DL-Int-1_results",
+                       "voxelWiseTDL", "coloredSWCsFMinusNE",
+                       "Forager_refHB130322-1_NE_refHB130605-2_normedTDLColored")
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -154,9 +154,9 @@ swcs = []
 
 
 for expInd, expName in enumerate(expNames):
-    # swcs.append(regF(None, expName + '-VB', resDir1))
+    swcs.append(regF(None, expName + '-VB', resDir1))
     # swcs.append(regF(None, expName + '-DB', resDir1))
-    swcs.append(regF(None, expName + '-WN', resDir1))
+    # swcs.append(regF(None, expName + '-WN', resDir1))
     # swcs.append(regF(None, expName + '-MB', resDir1))
 
     swcs.append(regPart(expName, resDir2, "-MB"))

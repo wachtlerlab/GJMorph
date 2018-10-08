@@ -43,6 +43,9 @@ if __name__ == '__main__':
                        "set name": "ls"}
 
     dataDF = pd.read_excel(dataXL, index_col=0)
+
+    meanNLPerVoxel = dataDF.groupby("voxel center").mean()["neurite length"].sort_index()
+
     # unstacking is required to fill up the sparse data with zeros
     indexedDF = dataDF.set_index(keys=["voxel size", 'voxel center', 'set name', 'expID', "initRefs"])
     pivotedDF = indexedDF.unstack(level=('set name', "initRefs", 'expID'), fill_value=0)
@@ -62,7 +65,9 @@ if __name__ == '__main__':
         toAppend["F(ls)"] = aov_table.loc["C(ls)", "F"]
         toAppend["voxel size"] = vcDF["voxel size"].iloc[0]
         temp = vcDF.set_index("ls")
-        toAppend["Difference of Means"] = temp.loc["Forager", "nl"].mean() - temp.loc["Newly Emerged", "nl"].mean()
+        toAppend["Difference in Mean TDL"] = temp.loc["Forager", "nl"].mean() - temp.loc["Newly Emerged", "nl"].mean()
+        toAppend["Mean TDL"] = meanNLPerVoxel[vc]
+        toAppend["Normed Difference in Mean TDL"] = 100 * toAppend["Difference in Mean TDL"] / meanNLPerVoxel[vc]
         statsDF = statsDF.append(toAppend, ignore_index=True)
 
     alpha = 0.05
