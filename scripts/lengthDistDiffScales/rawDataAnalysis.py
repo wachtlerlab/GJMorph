@@ -142,10 +142,9 @@ def plotNormedMeanDifferenceDistRegion(filteredDataXL, outBase):
                 boxprops={'lw': 2, "facecolor": (0, 0, 0, 0), 'edgecolor': 'r'}, showcaps=False, width=0.5)
 
     # ax.set_xlabel("Relative frequency\nof occurance")
-    ax.set_ylabel("Normalized change\nin TDL per voxel")
+    ax.set_ylabel("Normalized change\nin LDL(\%)")
     ax.set_ylim(-150, 150)
     ax.set_yticks(np.arange(-150, 200, 50))
-    ax.set_yticklabels(list("{}\%".format(x) for x in np.arange(-150, 200, 50)))
     # ax.set_xticklabels(["{}\%".format(x) for x in np.arange(-150, 200, 50)], rotation=90)
 
     ax.set_xlim(-1, 2.5)

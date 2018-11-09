@@ -37,10 +37,10 @@ if __name__ == '__main__':
     mainOutDir = sys.argv[4]
 
     if useNormed:
-        meanDiffCappedAt = 40
+        meanDiffCappedAt = 80
         colorMapColumn = "Normed Difference in Mean TDL"
     else:
-        meanDiffCappedAt = 30
+        meanDiffCappedAt = 40
         colorMapColumn = "Difference in Mean TDL"
 
     inDF = pd.read_excel(inputXL)
@@ -77,8 +77,9 @@ if __name__ == '__main__':
             temp1 = finalVoxelKDTree.data[nearestInGridIndices]
             temp2 = map(str, map(tuple, temp1))
             tempDF = filteredDataFilteredDF.set_index("voxel center")
+
             temp3 = np.minimum(
-                np.maximum(tempDF.loc[temp2, "Difference in Mean TDL"].values, -meanDiffCappedAt),
+                np.maximum(tempDF.loc[temp2, colorMapColumn].values, -meanDiffCappedAt),
                                meanDiffCappedAt)
             temp = np.array(nodepresences, dtype=np.float) * temp3
 
