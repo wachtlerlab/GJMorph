@@ -17,6 +17,7 @@ Note:                This script implicitly uses a specification file, with it's
 import os
 import numpy as np
 from scipy.stats import ttest_ind, f_oneway, kruskal
+from GJMorph.customStats import r_mannwhitneyu
 from pylatex import Document, Tabular, Command, Math, Package
 from pylatex.utils import NoEscape, bold
 from GJMorph.folderDefs import homeFolder, specFile
@@ -37,60 +38,7 @@ warnings.filterwarnings(action='once')
 
 
 
-def bootstrapWelsch_ttest(vals1, vals2, nBootstrap=1000):
 
-    """
-    Calculates the pVal of difference of means of vals1 and vals2 using the Welsch t-test.
-    It uses bootstrap sampling to determine the distribution of the Welsch t-statistic.
-
-    Refs:
-    1. http://www.biostat.umn.edu/%7Ewill/6470stuff/Class21-12/Handout21.pdf
-    2. https://en.wikipedia.org/wiki/Welch%27s_t-test
-
-    :param vals1: iterable
-    :param vals2: iterable
-    :param nBootstrap: number of bootstraps to use
-    :return: tStat, pVal : float, float
-    """
-
-    try:
-        vals1 = np.array(vals1)
-    except Exception as e:
-        raise(ValueError('vals1 must be an iterable of numbers'))
-
-    try:
-        vals2 = np.array(vals2)
-    except Exception as e:
-        raise (ValueError('vals2 must be an iterable of numbers'))
-
-    N1 = len(vals1)
-    N2 = len(vals2)
-
-    vals1Mean = vals1.mean()
-    vals2Mean = vals2.mean()
-
-    observedTStat = (vals1Mean - vals2Mean) / np.sqrt((np.var(vals1) / N1) + (np.var(vals2) / N2))
-
-    vals10Mean = vals1 - vals1Mean
-    vals20Mean = vals2 - vals2Mean
-
-    bootstrapSamples1 = np.random.choice(vals10Mean, size=(nBootstrap, N1))
-    bootstrapSamples2 = np.random.choice(vals20Mean, size=(nBootstrap, N2))
-
-    BSSampleMeans1 = bootstrapSamples1.mean(axis=1)
-    BSSampleMeans2 = bootstrapSamples2.mean(axis=1)
-
-    BSSampleVar1 = bootstrapSamples1.var(axis=1)
-    BSSampleVar2 = bootstrapSamples1.var(axis=1)
-
-    temp1 = (BSSampleVar1 / N1)
-    temp2 = (BSSampleVar2 / N2)
-
-    tStats = (BSSampleMeans1 - BSSampleMeans2) / np.sqrt(temp1 + temp2)
-
-    pVal = (np.abs(tStats) >= np.abs(observedTStat)).sum() / float(nBootstrap)
-
-    return observedTStat, pVal
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -183,9 +131,10 @@ def saveStats(inFile, outFile_prefix):
     """
     allData = pd.read_excel(inFile, index_col=(0, 1), header=0)
     allData.reset_index(inplace=True)
+
     statsData = pd.DataFrame()
 
-    doc = Document("{}_table".format(outFile_prefix))
+    doc = Document("{}_table".format(outFile_prefix), font_size='footnotesize')
     doc.packages.append(Package('geometry', options=['paperwidth=160mm',
                                                      'paperheight=205mm',
                                                      'top=2mm', 'left=1mm']))
@@ -197,7 +146,8 @@ def saveStats(inFile, outFile_prefix):
     doc.append(Command(command='renewcommand', arguments=[NoEscape(r'\arraystretch'), 2]))
     table1 = Tabular('|c|c|c|c|')
     table1.add_hline()
-    table1.add_row(map(bold, ['Measure', 'Newly emerged', 'Forager', 'pVal']))
+    table1.add_row(map(bold, ['Measure', 'Newly emerged', 'Forager',
+                              'pVal']))
     table1.add_hline()
     table1.add_hline()
 
@@ -215,36 +165,37 @@ def saveStats(inFile, outFile_prefix):
         fMeasures = allData.loc[lambda df:df["Labor State"] == "Forager", measure].values
         nMeasures = allData.loc[lambda df:df["Labor State"] == "Newly Emerged", measure].values
 
-        fMean = np.mean(fMeasures)
-        nMean = np.mean(nMeasures)
-        fStd = np.std(fMeasures)
-        nStd = np.std(nMeasures)
+        fMin = fMeasures.min()
+        fMax = fMeasures.max()
+        nMin = nMeasures.min()
+        nMax = nMeasures.max()
+        fMedian = np.median(fMeasures)
+        nMedian = np.median(nMeasures)
 
-        if np.isnan(fMean) or np.isnan(nMean):
+        if np.isnan(fMedian) or np.isnan(nMedian):
             pVal = float("nan")
         else:
             # tstat, pVal = bootstrapWelsch_ttest(fMeasures, nMeasures, 1000)
             # print('Bootstrap', tstat, pVal)
-            tstat1, pVal = ttest_ind(fMeasures, nMeasures, equal_var=False)
+            # tstat1, pVal = ttest_ind(fMeasures, nMeasures, equal_var=False)
+            tstat1, pVal = r_mannwhitneyu(fMeasures, nMeasures)
             # print('Welsch T-Test', tstat1, pVal1)
 
         measureS["P-Value"] = pVal
-        measureS["Forager Mean"] = fMean
-        measureS["Newly Emerged Mean"] = nMean
-        measureS["Forager S.D."] = fStd
-        measureS["Newly Emerged S.D."] = nStd
+
 
         statsData = statsData.append(measureS, ignore_index=True)
 
         pm = '\pm'
         pValStr = str(round(pVal, 4))
 
-        [fMean, fStd, nMean, nStd] = ["{:.3g}".format(x) for x in [fMean, fStd, nMean, nStd]]
+        [fMin, fMax, nMin, nMax, fMedian, nMedian] = ["{:.3g}".format(x)
+                                                      for x in [fMin, fMax, nMin, nMax, fMedian, nMedian]]
 
         if pVal <= 0.05:
-            [fMean, fStd, nMean, nStd, pm, measure, pValStr] = \
+            [fMin, fMax, fMedian, nMin, nMax, nMedian, measure, pValStr] = \
             map(lambda x: r'\color{red}{' + x + '}',
-                    [fMean, fStd, nMean, nStd, pm, measure, pValStr])
+                [fMin, fMax, fMedian, nMin, nMax, nMedian, measure, pValStr])
 
         measureEntry = Math(data=[NoEscape(r'\text{' + measure + '}')],
                             inline=True)
@@ -254,8 +205,8 @@ def saveStats(inFile, outFile_prefix):
             nEntry = "N/A"
             pValEntry = "N/A"
         else:
-            fEntry = Math(data=[NoEscape(fMean), NoEscape(pm), NoEscape(fStd)], inline=True)
-            nEntry = Math(data=[NoEscape(nMean), NoEscape(pm), NoEscape(nStd)], inline=True)
+            fEntry = Math(data=[NoEscape(fMin), ",", NoEscape(fMedian), ",", NoEscape(fMax)], inline=True)
+            nEntry = Math(data=[NoEscape(nMin), ",", NoEscape(nMedian), ",", NoEscape(nMax)], inline=True)
             pValEntry = Math(data=[NoEscape(pValStr)], inline=True)
 
         tableEntry = [measureEntry, nEntry, fEntry, pValEntry]
