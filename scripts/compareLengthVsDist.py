@@ -250,9 +250,10 @@ def plotART2WayAnova(dataXL, outBase):
         statsDF = statsDF.append(toAppend, ignore_index=True)
 
     alpha = 0.05
+    bfCorrectedAlpha = 0.05 / dataDF["initRefs"].unique().shape[0]
 
     sigDifFunc = lambda x: (x["pVal(ls:initRefs)"] > alpha) and \
-                           (x["pVal(ls)"] < alpha) and (x["pVal(initRefs)"] > alpha)
+                           (x["pVal(ls)"] < bfCorrectedAlpha) and (x["pVal(initRefs)"] > alpha)
     statsDF["Significant Difference"] = statsDF.apply(sigDifFunc, axis=1)
     statsDF.set_index("Bin Center $(\mu m)$", inplace=True)
     statsDF.to_excel("{}.xlsx".format(outBase))
