@@ -141,7 +141,14 @@ def art_two_way_anova(dataDF):
     modelFormula = robjects.Formula("m~f1*f2")
     ART_OPDF = ARTFunc_r(modelFormula, data=ART_IPDF_r)
     rsummary = robjects.r["summary"]
-    ART_OP_SUM = rsummary(ART_OPDF)
+
+    try:
+        ART_OP_SUM = rsummary(ART_OPDF)
+    except RRuntimeError as re:
+        if str(re).find("Error in Anova.lm") >= 0:
+            return 1, (np.nan, np.nan, np.nan)
+        else:
+            raise(re)
 
     columnSums = np.array(ART_OP_SUM[10])
     fVal_aligned_anova = np.array(ART_OP_SUM[11][4])
