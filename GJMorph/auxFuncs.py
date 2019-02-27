@@ -89,3 +89,24 @@ def resampleSWC(swcFile, resampleLength, mask=None, swcData=None, calculateBranc
         return totalLen, np.array(resampledSWCData)
 
 #***********************************************************************************************************************
+
+def windowSWCPts(branchMeans, gridSize, translationIndicator=(0, 0, 0)):
+    """
+    Custom internal function, use at your own risk!
+
+    Approximates points represented by rows of branchMeans to nearest voxel centers, where voxels are cubes of side
+    <gridSize> and are constructed so that there is a voxel with center at the origin. If translationIndicator is
+    specified, then the voxels are constructed in a way such that a voxel has a center at
+    - <translationIndicator> * <gridSize> * 0.5.
+    :param branchMeans: np.array of shape (nRows, 3)
+    :param gridSize: float
+    :param translationIndicator: three member iterable of floats
+    :return: voxelCenters, np.array of shape (nRows, 3), rounded to 6 digits
+    """
+
+    offset = np.array(translationIndicator) * gridSize * 0.5
+    temp = branchMeans + offset
+    voxelCenters = np.array(np.round(temp / gridSize), dtype=np.int32) * gridSize - offset
+    return np.round(voxelCenters, 6)
+
+#***********************************************************************************************************************

@@ -38,16 +38,16 @@ def plotNLDistribution(rawDataXL, initRefStr, outputBase):
     foragerData = dataDF[dataDF["Labor State"] == "Forager"]
     neData = dataDF[dataDF["Labor State"] == "Newly Emerged"]
 
-    foragerNLMean = foragerData["neurite length"].mean()
-    neNLMean = neData["neurite length"].mean()
-    allNLMean = dataDF["neurite length"].mean()
+    foragerNLMean = foragerData["percentage neurite length"].mean()
+    neNLMean = neData["percentage neurite length"].mean()
+    allNLMean = dataDF["percentage neurite length"].mean()
 
     # mplPars["text.usetex"] = False
     sns.set(style="darkgrid", rc=mplPars)
     fig, ax = plt.subplots(figsize=(7, 5.6))
 
 
-    sns.violinplot(x="neurite length", y="initRefs", data=subDataDF, hue="Labor State", split=True, scale="area",
+    sns.violinplot(x="percentage neurite length", y="initRefs", data=subDataDF, hue="Labor State", split=True, scale="area",
                    inner="quartile", palette=["r", "b"], hue_order=["Newly Emerged", "Forager"], ax=ax, orient='h',
                    bw=0.001)
     ax.set_xticks(np.arange(0, 150, 10), minor=True)

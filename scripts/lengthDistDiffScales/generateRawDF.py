@@ -13,19 +13,14 @@ Usage:              python generateRawDF.py <inputXL> <voxel size> <outputXL>
 
 import itertools
 import pandas as pd
-from GJMorph.auxFuncs import resampleSWC
+from GJMorph.auxFuncs import resampleSWC, windowSWCPts
 from regmaxsn.core.misc import parFileCheck
 import numpy as np
 import os
 import sys
 
 
-def windowSWCPts(branchMeans, gridSize, translationIndicator):
 
-    offset = np.array(translationIndicator) * gridSize * 0.5
-    temp = branchMeans + offset
-    voxelCenters = np.array(np.round(temp / gridSize), dtype=np.int32) * gridSize - offset
-    return np.round(voxelCenters, 6)
 
 
 def getRawDF(inputDF, gridSize, overlappingWindows=False, resampleLength=1):
@@ -40,30 +35,33 @@ def getRawDF(inputDF, gridSize, overlappingWindows=False, resampleLength=1):
 
 
     branchCenters = []
-    branchLens = []
+    percentBranchLens = []
 
     for swc in inputDF["swcFile"]:
 
         print('Initializing SWCTree for {}'.format(swc))
         bc, bL, swcData = resampleSWC(swc, resampleLength, calculateBranchLens=True)
+        bL_np = np.array(bL)
+        percent_bL = bL_np/bL_np.sum()
         branchCenters.append(bc)
-        branchLens.append(bL)
+        percentBranchLens.append(percent_bL)
 
     tempDFs = []
 
     for rowInd, (expId, laborState, initRefs, swcFile) in inputDF.iterrows():
+        print("Doing {}".format(swcFile))
 
         for translationIndicator in translationIndicators:
 
-            print('GridSize={}, swc={}, translationIndicator={}'.format(gridSize, swcFile,
-                                                                        translationIndicator))
+            # print('GridSize={}, swc={}, translationIndicator={}'.format(gridSize, swcFile,
+            #                                                             translationIndicator))
 
             centers = windowSWCPts(branchCenters[rowInd],
                                    gridSize, translationIndicator)
 
             tempDF = pd.DataFrame()
             tempDF.loc[:, 'voxel center'] = map(tuple, centers)
-            tempDF.loc[:, 'neurite length'] = branchLens[rowInd]
+            tempDF.loc[:, 'percentage neurite length'] = percentBranchLens[rowInd]
 
             tempDF = tempDF.groupby('voxel center').sum().reset_index()
             tempDF.loc[:, 'set name'] = laborState
