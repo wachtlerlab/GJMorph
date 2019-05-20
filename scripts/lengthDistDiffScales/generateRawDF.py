@@ -23,7 +23,7 @@ import sys
 
 
 
-def getRawDF(inputDF, gridSize, overlappingWindows=False, resampleLength=1):
+def getRawDF(inputXL, TDLWNXL, outputXL, gridSize, overlappingWindows=False, resampleLength=1):
 
 
     if overlappingWindows:
@@ -33,35 +33,29 @@ def getRawDF(inputDF, gridSize, overlappingWindows=False, resampleLength=1):
     else:
         translationIndicators = [[0, 0, 0]]
 
-
-    branchCenters = []
-    percentBranchLens = []
-
-    for swc in inputDF["swcFile"]:
-
-        print('Initializing SWCTree for {}'.format(swc))
-        bc, bL, swcData = resampleSWC(swc, resampleLength, calculateBranchLens=True)
-        bL_np = np.array(bL)
-        percent_bL = bL_np/bL_np.sum()
-        branchCenters.append(bc)
-        percentBranchLens.append(percent_bL)
+    inputDF = pd.read_excel(inputXL)
+    TDLWNDF = pd.read_excel(TDLWNXL).set_index(["initRefs", "Experiment ID"])
 
     tempDFs = []
 
     for rowInd, (expId, laborState, initRefs, swcFile) in inputDF.iterrows():
         print("Doing {}".format(swcFile))
 
+        bc, bL, swcData = resampleSWC(swcFile, resampleLength, calculateBranchLens=True)
+
+        expIdWN = expId[:-2] + "WN"
+        pdl = 100 * bL / TDLWNDF.loc[(initRefs, expIdWN), "WN_TDL"]
         for translationIndicator in translationIndicators:
 
             # print('GridSize={}, swc={}, translationIndicator={}'.format(gridSize, swcFile,
             #                                                             translationIndicator))
 
-            centers = windowSWCPts(branchCenters[rowInd],
+            centers = windowSWCPts(bc,
                                    gridSize, translationIndicator)
 
             tempDF = pd.DataFrame()
             tempDF.loc[:, 'voxel center'] = map(tuple, centers)
-            tempDF.loc[:, 'percentage neurite length'] = percentBranchLens[rowInd]
+            tempDF.loc[:, 'percentage neurite length'] = pdl
 
             tempDF = tempDF.groupby('voxel center').sum().reset_index()
             tempDF.loc[:, 'set name'] = laborState
@@ -72,7 +66,7 @@ def getRawDF(inputDF, gridSize, overlappingWindows=False, resampleLength=1):
 
     rawDF = pd.concat(tempDFs, ignore_index=True)
 
-    return rawDF
+    rawDF.to_excel(outputXL)
 
 
 
@@ -85,21 +79,27 @@ def partFuncDir(dir, partStr):
 
 if __name__ == '__main__':
 
-    assert len(sys.argv) == 4, 'Improper usage! Please use as \'python generateRawDF.py <inputXL>' \
-                               '<voxelSize> <outXL>\''
+    assert len(sys.argv) == 6, 'Improper usage! Please use as \'python generateRawDF.py <inputXL> <TDLWNXL> <voxelSize> <overlappingWindowsBool> <outXL>\''
     inputXL = sys.argv[1]
-    voxelSize = float(sys.argv[2])
-    outputXL = sys.argv[3]
+    TDLWNXL = sys.argv[2]
+    voxelSize = float(sys.argv[3])
+    if sys.argv[4] in ["True", "TRUE", "1"]:
+        overlappingWindows = True
+    elif sys.argv[4] in ["False", "FALSE", "0"]:
+        overlappingWindows = False
+    else:
+        raise(IOError("Unknown value for <overlappingWindowsBool>, use one of [\"True\", \"TRUE\", \"1\"] for True and one of [\"False\", \"FALSE\", \"0\"] for False"))
+    outputXL = sys.argv[5]
 
 
-    inputDF = pd.read_excel(inputXL)
+    getRawDF(inputXL=inputXL,
+             gridSize=voxelSize,
+             TDLWNXL=TDLWNXL,
+             outputXL=outputXL,
+             overlappingWindows=overlappingWindows,
+             resampleLength=1)
 
-    rawDF = getRawDF(inputDF=inputDF,
-                     gridSize=voxelSize,
-                     overlappingWindows=True,
-                     resampleLength=1)
 
-    rawDF.to_excel(outputXL)
 
 
 

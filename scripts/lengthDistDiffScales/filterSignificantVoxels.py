@@ -75,7 +75,7 @@ if __name__ == '__main__':
     sigDifFunc = lambda x: (x["pVal(ls:initRefs)"] > alpha) and \
                            (x["pVal(ls)"] < bfCorrectedAlpha) and (x["pVal(initRefs)"] > alpha)
 
-    statsDF["Significant Difference"] = statsDF.apply(sigDifFunc, axis=1)
-    statsDF.to_excel("{}.xlsx".format(outBase))
+    statsDF["Significant Difference"] = statsDF.apply(sigDifFunc, axis=1)b
+ b   statsDF.to_excel("{}.xlsx".format(outBase))
 
-
+b

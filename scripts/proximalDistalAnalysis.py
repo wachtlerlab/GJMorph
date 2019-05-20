@@ -1,13 +1,15 @@
 import pandas as pd
 from GJMorph.auxFuncs import windowSWCPts
 from btmorph2 import NeuronMorphology
+from scipy.spatial import cKDTree
+from ast import literal_eval as make_tuple
 from regmaxsn.core.swcFuncs import readSWC_numpy, writeSWC_numpy
 import numpy as np
 import sys
 import os
 
 
-def generate_raw_data(inputXL, outputXL, gridSize):
+def generate_raw_data(inputXL, outputCSV, gridSize):
     """
     For each swc in inputXL, and for every node in each swc, Terminal proximity is calculated, its
     XYZ is approximated to the center of the voxel which contains it
@@ -47,12 +49,12 @@ def generate_raw_data(inputXL, outputXL, gridSize):
 
     rawDF = pd.concat(tempDFs, ignore_index=True)
 
-    rawDF.to_excel(outputXL)
+    rawDF.to_csv(outputCSV)
 
 
-def classify_proximal_distal(dataXL, outXL, thres):
+def classify_proximal_distal(dataCSV, outXL, thres):
 
-    dataDF = pd.read_excel(dataXL)
+    dataDF = pd.read_csv(dataCSV, index_col=0)
 
     dataDFRestricted = dataDF.loc[:, ["voxel center", "terminal proximity"]]
     medianTerminalProximityDF = pd.DataFrame()
@@ -73,17 +75,21 @@ def generateDistalColoredSSWCs(distalIndicatorXL, inputXL, outDir):
     distalIndicatorDF = pd.read_excel(distalIndicatorXL)
     gridSize = distalIndicatorDF["voxel size"].iloc[0]
 
-    distalIndicatorDF.set_index("voxel center", inplace=True)
+    finalVoxelSet = map(make_tuple, distalIndicatorDF["voxel center"])
+    finalVoxelKDTree = cKDTree(finalVoxelSet, leafsize=100)
+
+    # distalIndicatorDF.set_index("voxel center", inplace=True)
 
     for rowInd, (expId, laborState, initRefs, swcFile) in inputDF.iterrows():
         print("Doing {}".format(swcFile))
 
         headr, swcData = readSWC_numpy(swcFile)
 
-        centers = windowSWCPts(swcData[:, 2:5], gridSize)
-        centers = [str(tuple(x)) for x in centers]
+        nearestInGridDist, nearestInGridIndices = \
+                                                  finalVoxelKDTree.query(swcData[:, 2:5], n_jobs=6)
+        
 
-        extraCol = np.array(distalIndicatorDF["Is Distal?"][centers].values, dtype=int)
+        extraCol = np.array(distalIndicatorDF["Is Distal?"].iloc[nearestInGridIndices].values, dtype=int)
         extraCol = extraCol.reshape((extraCol.shape[0], 1))
         sswcData = np.concatenate((swcData, extraCol), axis=1)
 
@@ -100,8 +106,8 @@ def generateDistalColoredSSWCs(distalIndicatorXL, inputXL, outDir):
 if __name__ == "__main__":
 
     assert len(sys.argv) in [5], "Improper Usage! Please use as\n" \
-                                 "python {currFile} genRawData <inputXL> <outputXL> <gridSize>" \
-                                 "python {currFile} classify <inputXL> <outputXL> <thresh>" \
+                                 "python {currFile} genRawData <inputXL> <outputCSV> <gridSize>" \
+                                 "python {currFile} classify <inputCSV> <outputXL> <thresh>" \
                                  "python {currFile} genSSWC <classificationXL> <inputXL> <outdir>" \
                                  "".format(currFile=sys.argv[0])
 

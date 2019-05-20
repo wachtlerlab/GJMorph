@@ -109,3 +109,4 @@ venv.bak/
 
 # manually added
 tests/testFiles
+*~

@@ -21,6 +21,8 @@ from GJMorph.pandasFuncs import dfInterHueFunc
 from GJMorph.customStats import art_two_way_anova
 from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
+import warnings
+warnings.filterwarnings(action='once')
 
 
 
@@ -238,10 +240,36 @@ def plotART2WayAnova(dataXL, outBase):
     dataDFR = dataDF.rename(columns=columnTempNames)
     reorderedDF = dataDFR.loc[:, ["bin", "ls", "initRefs", "pdl"]].set_index("bin")
 
-    statsDF = pd.DataFrame(columns=["pVal(ls)", "pVal(initRefs)", "pVal(ls:initRefs)", "ART correctness"])
+    # calculating cumulative distribution of PDL with radius
+
+    temp1 = dataDFR.drop(columns=["swc File"])
+    temp2 = temp1.set_index(['initRefs', 'ls', 'Experiment ID','bin'])
+    temp3 = temp2.unstack()
+    temp4 = temp3.cumsum(axis=1)
+    cumsumDF = temp4.stack().reset_index()
+
+    cumsumDF_reordered = cumsumDF.loc[: , ["bin", "ls", "initRefs", "pdl"]].set_index("bin")
+
+    # initializing a DF for collecting stats
+    statsDF = pd.DataFrame(columns=["pVal(ls)", "pVal(initRefs)", "pVal(ls:initRefs)", "ART correctness", "Using Cumulative distribution over radius?"])
 
     for binInd, (binCenter, bcDF) in enumerate(reorderedDF.groupby("bin")):
+
+        # Doing stats for distribution of PDL over radius
         toAppend = pd.Series()
+        toAppend["Using Cumulative distribution over radius?"] = 0
+        toAppend["Bin Center $(\mu m)$"] = binCenter
+        if any(bcDF["pdl"]):
+            toAppend["ART correctness"], (toAppend["pVal(ls)"],
+            toAppend["pVal(initRefs)"], toAppend["pVal(ls:initRefs)"]) = art_two_way_anova(bcDF)
+
+        statsDF = statsDF.append(toAppend, ignore_index=True)
+
+    for binInd, (binCenter, bcDF) in enumerate(cumsumDF_reordered.groupby("bin")):
+
+        # Doing stats for cumulative distribution of PDL over radius
+        toAppend = pd.Series()
+        toAppend["Using Cumulative distribution over radius?"] = 1
         toAppend["Bin Center $(\mu m)$"] = binCenter
         if any(bcDF["pdl"]):
             toAppend["ART correctness"], (toAppend["pVal(ls)"],
@@ -253,17 +281,20 @@ def plotART2WayAnova(dataXL, outBase):
     bfCorrectedAlpha = 0.05 / dataDF["initRefs"].unique().shape[0]
 
     sigDifFunc = lambda x: (x["pVal(ls:initRefs)"] > alpha) and \
-                           (x["pVal(ls)"] < bfCorrectedAlpha) and (x["pVal(initRefs)"] > alpha)
+                           (x["pVal(ls)"] < bfCorrectedAlpha)
     statsDF["Significant Difference"] = statsDF.apply(sigDifFunc, axis=1)
-    statsDF.set_index("Bin Center $(\mu m)$", inplace=True)
+    # statsDF.set_index("Bin Center $(\mu m)$", inplace=True) 
     statsDF.to_excel("{}.xlsx".format(outBase))
 
     sns.set(rc=mplPars, style="darkgrid")
+
+    # plotting distribution of PDL with radius
     fig, ax = plt.subplots(figsize=(7, 5.6))
 
     sns.pointplot(data=dataDFR, x="bin", y="pdl", hue="ls", ax=ax, hue_order=["Newly Emerged", "Forager"],
                   palette=[(1, 0, 0, 1), (0, 0, 1, 1)], dodge=True, ci="sd", size=10)
-    sigBCs = statsDF.loc[lambda x: x["Significant Difference"], :].index
+    tempStatsDF = statsDF.loc[lambda x: x["Using Cumulative distribution over radius?"] == 0, :]
+    sigBCs = tempStatsDF.loc[lambda x: x["Significant Difference"], :]["Bin Center $(\mu m)$"]
     sigBCInds = [binCenters.tolist().index(bc) for bc in sigBCs]
     ax.plot(sigBCInds, [-2.5] * len(sigBCInds), "*k", ms=10)
 
@@ -278,7 +309,32 @@ def plotART2WayAnova(dataXL, outBase):
     ax.grid(True)
 
     fig.tight_layout()
-    fig.savefig("{}.png".format(outBase), dpi=300)
+    fig.savefig("{}_hist.png".format(outBase), dpi=300)
+
+    # plotting cumulative distribution of PDL with radius
+    fig, ax = plt.subplots(figsize=(7, 5.6))
+
+    tempStatsDF = statsDF.loc[lambda x: x["Using Cumulative distribution over radius?"] == 1, :]
+    sigBCs = tempStatsDF.loc[lambda x: x["Significant Difference"], :]["Bin Center $(\mu m)$"]
+    sigBCInds = [binCenters.tolist().index(bc) for bc in sigBCs]
+
+    sns.pointplot(data=cumsumDF, x="bin", y="pdl", hue="ls", ax=ax, hue_order=["Newly Emerged", "Forager"],
+                  palette=[(1, 0, 0, 1), (0, 0, 1, 1)], dodge=True, ci="sd", size=10)
+    ax.plot(sigBCInds, [-10] * len(sigBCInds), "*k", ms=10)
+
+    l1, = ax.plot((), (), color=(1, 0, 0, 1), ls="-", marker="o", label="Newly Emerged\n(n={})".format(nForager))
+    l2, = ax.plot((), (), color=(0, 0, 1, 1), ls="-", marker="o", label="Forager\n(n={})".format(nNE))
+
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    ax.set_xlabel("Shell Radius $(\mu m)$")
+    ax.set_ylabel("Cumulative Percentage\nDendritic Length")
+    ax.legend(handles=(l1, l2), loc="upper center", ncol=2)
+    ax.set_ylim(-20, 140)
+    ax.grid(True)
+
+    fig.tight_layout()
+    fig.savefig("{}_cumhist.png".format(outBase), dpi=300)
+
 
 
 if __name__ == "__main__":

@@ -37,11 +37,11 @@ if __name__ == '__main__':
     mainOutDir = sys.argv[4]
 
     if useNormed:
-        meanDiffCappedAt = 100
-        colorMapColumn = "Normed Difference in Mean TDL"
+        meanDiffCappedAt = 80
+b        colorMapColumn = "Normed Difference in Mean TDL"
     else:
-        meanDiffCappedAt = 50
-        colorMapColumn = "Difference in Mean TDL"
+        meanDiffCappedAt = 40
+        colorMapColumn = "Dibfference in Mean TDL"
 
     inDF = pd.read_excel(inputXL)
     nInitRefs = inDF["initRefs"].unique().size

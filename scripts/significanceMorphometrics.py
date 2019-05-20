@@ -132,6 +132,9 @@ def saveStats(inFile, outFile_prefix):
     allData = pd.read_excel(inFile, index_col=(0, 1), header=0)
     allData.reset_index(inplace=True)
 
+    fData = allData.loc[lambda df:df["Labor State"] == "Forager", :]
+    nData = allData.loc[lambda df:df["Labor State"] == "Newly Emerged", :]
+
     statsData = pd.DataFrame()
 
     doc = Document("{}_table".format(outFile_prefix), font_size='footnotesize')
@@ -152,6 +155,20 @@ def saveStats(inFile, outFile_prefix):
     table1.add_hline()
 
     specsDF = pd.read_excel(specFile, index_col=0, header=0)
+
+    excludeTopologicalMeasures = []
+    if "Total number of bifurcations" in allData:
+        if any(x == 0 for x in allData["Total number of bifurcations"]):
+            excludeTopologicalMeasures = ["Total number of bifurcations",
+                                          "Max. centrifugal order",
+                                          "Avg. bifurcation angle (local)",
+                                          "Avg. bifurcation angle (remote)",
+                                          "Avg. partition asymmetry",
+                                          "Avg. parent daughter diameter ratio",
+                                          "Avg. sibling diameter ratio",
+                                          "Hausdorff fractal dimension"]
+
+               
     for measureName, (divisor, UnitStr, program, programMeasure) in specsDF.iterrows():
 
         if pd.isnull(UnitStr):
@@ -165,6 +182,7 @@ def saveStats(inFile, outFile_prefix):
         fMeasures = allData.loc[lambda df:df["Labor State"] == "Forager", measure].values
         nMeasures = allData.loc[lambda df:df["Labor State"] == "Newly Emerged", measure].values
 
+
         fMin = fMeasures.min()
         fMax = fMeasures.max()
         nMin = nMeasures.min()
@@ -172,7 +190,7 @@ def saveStats(inFile, outFile_prefix):
         fMedian = np.median(fMeasures)
         nMedian = np.median(nMeasures)
 
-        if np.isnan(fMedian) or np.isnan(nMedian):
+        if np.isnan(fMedian) or np.isnan(nMedian) or measureName in excludeTopologicalMeasures:
             pVal = float("nan")
         else:
             # tstat, pVal = bootstrapWelsch_ttest(fMeasures, nMeasures, 1000)
