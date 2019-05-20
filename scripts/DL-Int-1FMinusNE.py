@@ -121,11 +121,12 @@ resDir2 = os.path.join(homeFolder, 'DataAndResults', 'morphology', 'Reg2Reg', 'D
 # resDir1 = os.path.join(homeFolder, 'DataAndResults', 'morphology', "DL-Int-1Results",
 #                        "voxelWiseDistAnalysis", "DL-Int-1_min20_12Nrns", "ART_TwoWayAnova_withOverlap",
 #                        "FMinusNE_vs20_0p05", "Forager_refHB130322-1_NE_refHB130605-2_normedTDLColored")
+#
+resDir1 = os.path.join(homeFolder, "DataAndResults", "morphology",
+                       "DL-Int-1Results", "voxelWiseDistAnalysis", "DL-Int-1_min20_12Nrns",
+                       "ProximalDistalAnalysis_withoutOverlap",
+                       "ProximalDistalSSWC", "t0p9", "Forager_refHB130322-1_NE_refHB130605-2")
 
-resDir1 = os.path.join(homeFolder, 'DataAndResults', 'morphology', "DL-Int-1Results",
-                       "voxelWiseDistAnalysis", "DL-Int-1_min20_12Nrns",
-                       "ProximalDistalAnalysis", "ProximalDistalSSWC", "t0p9",
-                       "Forager_refHB130322-1_NE_refHB130605-2")
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -162,9 +163,9 @@ swcs = []
 
 
 for expInd, expName in enumerate(expNames):
-    swcs.append(regF(None, expName + '-VB', resDir1))
+    # swcs.append(regF(None, expName + '-VB', resDir1))
     # swcs.append(regF(None, expName + '-DB', resDir1))
-    # swcs.append(regF(None, expName + '-WN', resDir1))
+    swcs.append(regF(None, expName + '-WN', resDir1))
     # swcs.append(regF(None, expName + '-MB', resDir1))
 
     swcs.append(regPart(expName, resDir2, "-MB"))
@@ -255,18 +256,30 @@ nPts = 8
 #     ]
 #     )
 
-# density value of 0 indicates newlyEmergedDensity-foragerDensity=1, center two shades are white
+# # density value of 0 indicates newlyEmergedDensity-foragerDensity=1, center two shades are white
+# siemic colormap from matplotlib
+# SbaseCols = np.array([
+#     [ 0.78235294,  0.        ,  0.        ,  1.        ],
+#     [ 1.        ,  0.14509804,  0.14509804,  1.        ],
+#     [ 1.        ,  0.70980392,  0.70980392,  1.        ],
+#     [ 0.5       ,  0.5       ,  0.5       ,  0.5       ],
+#     [ 0.5       ,  0.5       ,  0.5       ,  0.5       ],
+#     [ 0.70980392,  0.70980392,  1.        ,  1.        ],
+#     [ 0.14509804,  0.14509804,  1.        ,  1.        ],
+#     [ 0.        ,  0.        ,  0.69529412,  1.        ]
+#     ]
+#     )
+
+# PiYG colormap from matplotlib
 SbaseCols = np.array([
-    [ 0.78235294,  0.        ,  0.        ,  1.        ],
-    [ 1.        ,  0.14509804,  0.14509804,  1.        ],
-    [ 1.        ,  0.70980392,  0.70980392,  1.        ],
-    [ 0.5       ,  0.5       ,  0.5       ,  0.5       ],
-    [ 0.5       ,  0.5       ,  0.5       ,  0.5       ],
-    [ 0.70980392,  0.70980392,  1.        ,  1.        ],
-    [ 0.14509804,  0.14509804,  1.        ,  1.        ],
-    [ 0.        ,  0.        ,  0.69529412,  1.        ]
-    ]
-    )
+       [ 0.55686275,  0.00392157,  0.32156863,  1.        ],
+       [ 0.81291811,  0.2544406 ,  0.56931949,  1.        ],
+       [ 0.9348712 ,  0.67981546,  0.83121876,  1.        ],
+       [ 0.98569781,  0.90319108,  0.94586697,  1.        ],
+       [ 0.92026144,  0.96293733,  0.85767013,  1.        ],
+       [ 0.69088812,  0.86243752,  0.48835063,  1.        ],
+       [ 0.38269896,  0.64036909,  0.1810842 ,  1.        ],
+       [ 0.15294118,  0.39215686,  0.09803922,  1.        ]])
 
 # SbaseCols = np.array([[0.78235294, 0., 0., 1.],
 #                       [1., 1., 1., 0.5],
