@@ -199,21 +199,16 @@ def saveStats(inFile, outFile_prefix):
             tstat1, pVal = r_mannwhitneyu(fMeasures, nMeasures)
             # print('Welsch T-Test', tstat1, pVal1)
 
-        measureS["P-Value"] = pVal
-
-
-        statsData = statsData.append(measureS, ignore_index=True)
-
         pm = '\pm'
         pValStr = str(round(pVal, 4))
 
-        [fMin, fMax, nMin, nMax, fMedian, nMedian] = ["{:.3g}".format(x)
+        [fMin1, fMax1, nMin1, nMax1, fMedian1, nMedian1] = ["{:.3g}".format(x)
                                                       for x in [fMin, fMax, nMin, nMax, fMedian, nMedian]]
 
         if pVal <= 0.05:
-            [fMin, fMax, fMedian, nMin, nMax, nMedian, measure, pValStr] = \
+            [fMin1, fMax1, fMedian1, nMin1, nMax1, nMedian1, measure, pValStr] = \
             map(lambda x: r'\color{red}{' + x + '}',
-                [fMin, fMax, fMedian, nMin, nMax, nMedian, measure, pValStr])
+                [fMin1, fMax1, fMedian1, nMin1, nMax1, nMedian1, measure, pValStr])
 
         measureEntry = Math(data=[NoEscape(r'\text{' + measure + '}')],
                             inline=True)
@@ -223,13 +218,19 @@ def saveStats(inFile, outFile_prefix):
             nEntry = "N/A"
             pValEntry = "N/A"
         else:
-            fEntry = Math(data=[NoEscape(fMin), ",", NoEscape(fMedian), ",", NoEscape(fMax)], inline=True)
-            nEntry = Math(data=[NoEscape(nMin), ",", NoEscape(nMedian), ",", NoEscape(nMax)], inline=True)
+            fEntry = Math(data=[NoEscape(fMin1), ",", NoEscape(fMedian1), ",", NoEscape(fMax1)], inline=True)
+            nEntry = Math(data=[NoEscape(nMin1), ",", NoEscape(nMedian1), ",", NoEscape(nMax1)], inline=True)
             pValEntry = Math(data=[NoEscape(pValStr)], inline=True)
 
         tableEntry = [measureEntry, nEntry, fEntry, pValEntry]
         table1.add_row(tableEntry)
         table1.add_hline()
+
+        measureS["Newly emerged"] = "{:0.3g}, {:0.3g}, {:0.3g}".format(nMin, nMedian, nMax)
+        measureS["Forager"] = "{:0.3g}, {:0.3g}, {:0.3g}".format(fMin, fMedian, fMax)
+        measureS["P-Value"] = "{:0.4g}".format(pVal)
+
+        statsData = statsData.append(measureS, ignore_index=True)
 
     statsData.to_excel("{}.xlsx".format(outFile_prefix))
 
